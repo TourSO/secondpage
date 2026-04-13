@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Second Page — Livres d'occasion entre particuliers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: #FAFAF7;
+  color: #1C1610;
+  overflow-x: hidden;
+  cursor: none;
+}
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+button { cursor: none; font-family: 'Outfit', sans-serif; }
+ul { list-style: none; }
+
+/* ===== CUSTOM CURSOR ===== */
+#cursor {
+  width: 10px; height: 10px;
+  background: #3D6B4F;
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.25s, height 0.25s, background 0.25s;
+}
+#cursor-ring {
+  width: 36px; height: 36px;
+  border: 1.5px solid #3D6B4F;
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.12s ease-out, width 0.25s, height 0.25s, opacity 0.25s;
+}
+body:hover #cursor-ring { opacity: 1; }
+
+/* ===== CSS VARIABLES ===== */
+:root {
+  --sage: #3D6B4F;
+  --sage-mid: #5A8A6A;
+  --sage-light: #8DB89A;
+  --sage-pale: #EAF2EC;
+  --cream: #FAFAF7;
+  --warm: #F5F0E8;
+  --paper: #EDE8DE;
+  --brown: #2E1F14;
+  --brown-mid: #5C3D27;
+  --brown-light: #8C6347;
+  --amber: #C47B3A;
+  --amber-pale: #FBF0E3;
+  --rust: #A0422A;
+  --text: #1C1610;
+  --text-muted: #6B5B4E;
+  --text-light: #9C8878;
+  --border: rgba(46,31,20,0.10);
+  --border-mid: rgba(46,31,20,0.18);
+  --shadow-sm: 0 2px 12px rgba(46,31,20,0.07);
+  --shadow-md: 0 8px 32px rgba(46,31,20,0.10);
+  --shadow-lg: 0 20px 60px rgba(46,31,20,0.13);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+}
+
+/* ===== NOISE TEXTURE OVERLAY ===== */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 1000; opacity: 0.4;
+}
+
+/* ===== NAVIGATION ===== */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 3rem;
+  background: rgba(250,250,247,0.85);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: var(--shadow-sm); }
+
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Lora', serif; font-weight: 700; font-size: 1.25rem;
+  color: var(--brown);
+}
+.nav-logo-mark {
+  width: 34px; height: 34px;
+  background: var(--sage); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-mark svg { width: 18px; height: 18px; fill: white; }
+.nav-logo span { color: var(--sage); }
+
+.nav-links {
+  display: flex; gap: 2.5rem; align-items: center;
+}
+.nav-links a {
+  font-size: 0.875rem; font-weight: 400; color: var(--text-muted);
+  position: relative; transition: color 0.2s;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
+  height: 1px; background: var(--sage);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.nav-links a:hover { color: var(--sage); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+.nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; cursor: none; font-family: 'Outfit', sans-serif; font-weight: 500; transition: all 0.22s ease; }
+.btn-ghost { background: none; border: 1px solid var(--border-mid); color: var(--text-muted); padding: 8px 20px; border-radius: 50px; font-size: 0.85rem; }
+.btn-ghost:hover { border-color: var(--sage); color: var(--sage); background: var(--sage-pale); }
+.btn-primary { background: var(--sage); color: white; padding: 9px 22px; border-radius: 50px; font-size: 0.85rem; }
+.btn-primary:hover { background: var(--brown); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(61,107,79,0.35); }
+.btn-large { padding: 14px 36px; font-size: 1rem; border-radius: 50px; }
+.btn-xl { padding: 16px 42px; font-size: 1.05rem; border-radius: 50px; }
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 68px 3rem 0;
+  max-width: 1300px; margin: 0 auto;
+  gap: 4rem;
+}
+
+.hero-left { padding: 4rem 2rem 4rem 0; }
+
+.hero-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--sage-pale); color: var(--sage);
+  font-size: 0.8rem; font-weight: 500;
+  padding: 7px 16px; border-radius: 50px;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(61,107,79,0.15);
+  animation: fadeUp 0.6s ease both;
+}
+.hero-pill-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sage-mid); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+.hero h1 {
+  font-family: 'Lora', serif;
+  font-size: clamp(2.8rem, 4.5vw, 4rem);
+  line-height: 1.08;
+  color: var(--brown);
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+.hero h1 em { color: var(--sage); font-style: italic; }
+.hero h1 .underline-word { position: relative; display: inline-block; }
+.hero h1 .underline-word::after {
+  content: '';
+  position: absolute; bottom: 2px; left: 0; right: 0;
+  height: 3px; background: var(--amber); border-radius: 2px;
+  transform: scaleX(0); transform-origin: left;
+  animation: lineGrow 0.6s 0.9s ease forwards;
+}
+@keyframes lineGrow { to { transform: scaleX(1); } }
+
+.hero-desc {
+  font-size: 1.05rem; color: var(--text-muted); line-height: 1.75;
+  max-width: 480px; margin-bottom: 2.5rem;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
+.hero-cta-group {
+  display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+  margin-bottom: 3.5rem;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+
+.hero-stats {
+  display: flex; gap: 2.5rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--border);
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.stat { }
+.stat-number {
+  font-family: 'Lora', serif; font-size: 2.2rem; font-weight: 700;
+  color: var(--brown); line-height: 1;
+}
+.stat-label { font-size: 0.78rem; color: var(--text-light); margin-top: 4px; line-height: 1.4; }
+
+/* HERO RIGHT — Book illustration */
+.hero-right {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  padding: 3rem 0;
+  animation: fadeUp 0.7s 0.2s ease both;
+}
+
+.books-scene { position: relative; width: 380px; height: 440px; }
+
+.book {
+  position: absolute; border-radius: 10px 16px 16px 10px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 1.4rem 1.4rem 1.2rem;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.book:hover { transform: translateY(-8px) rotate(0deg) !important; box-shadow: var(--shadow-lg); }
+
+/* book spine */
+.book::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 12px; border-radius: 10px 0 0 10px;
+  background: rgba(0,0,0,0.18);
+}
+
+.book-1 { width: 210px; height: 290px; background: #2E4A38; bottom: 15px; left: 10px; transform: rotate(-7deg); z-index: 1; }
+.book-2 { width: 210px; height: 290px; background: #B87333; bottom: 40px; left: 90px; transform: rotate(3deg); z-index: 2; }
+.book-3 { width: 210px; height: 290px; background: #3D5C7A; top: 5px; left: 55px; transform: rotate(-2deg); z-index: 3; }
+
+.book-cat { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.65; color: white; }
+.book-ttl { font-family: 'Lora', serif; font-size: 1.05rem; color: white; line-height: 1.3; margin-top: 6px; }
+.book-auth { font-size: 0.72rem; opacity: 0.7; color: white; margin-top: 4px; }
+.book-footer { display: flex; align-items: center; justify-content: space-between; }
+.book-price { font-size: 1.1rem; font-weight: 600; color: white; }
+.book-eco { font-size: 0.68rem; background: rgba(255,255,255,0.18); color: white; padding: 3px 8px; border-radius: 20px; }
+
+/* floating tags */
+.ftag {
+  position: absolute;
+  background: white; border-radius: 12px;
+  padding: 0.65rem 1.1rem;
+  box-shadow: 0 6px 24px rgba(46,31,20,0.12);
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; font-weight: 500; color: var(--brown);
+  white-space: nowrap;
+}
+.ftag-1 { top: 18px; right: -10px; animation: floatA 3.5s ease-in-out infinite; }
+.ftag-2 { bottom: 18px; right: -10px; animation: floatB 3.5s ease-in-out infinite; }
+.ftag-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+@keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+@keyframes floatB { 0%,100%{transform:translateY(0)} 50%{transform:translateY(9px)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+/* ===== MARQUEE STRIP ===== */
+.marquee-strip {
+  background: var(--brown); padding: 1rem 0; overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.marquee-inner { display: flex; gap: 0; white-space: nowrap; animation: scroll 25s linear infinite; }
+.marquee-item {
+  display: inline-flex; align-items: center; gap: 1rem;
+  padding: 0 2.5rem; font-size: 0.82rem; font-weight: 500;
+  color: rgba(255,255,255,0.65); letter-spacing: 0.04em;
+}
+.marquee-item strong { color: rgba(255,255,255,0.9); }
+.marquee-sep { color: var(--sage-light); font-size: 1rem; }
+@keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ===== SEARCH SECTION ===== */
+.search-section { padding: 5rem 3rem; max-width: 1300px; margin: 0 auto; }
+.section-eyebrow { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; color: var(--sage); margin-bottom: 0.6rem; }
+.section-heading { font-family: 'Lora', serif; font-size: clamp(1.8rem, 3vw, 2.6rem); color: var(--brown); line-height: 1.2; margin-bottom: 0.8rem; }
+.section-sub { font-size: 1rem; color: var(--text-muted); line-height: 1.7; max-width: 520px; }
+
+.search-bar {
+  display: flex; align-items: center; gap: 0;
+  background: white; border-radius: 50px;
+  border: 1.5px solid var(--border-mid);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden; margin: 2.5rem 0 1.2rem;
+  transition: box-shadow 0.25s, border-color 0.25s;
+}
+.search-bar:focus-within { border-color: var(--sage); box-shadow: 0 0 0 4px rgba(61,107,79,0.10), var(--shadow-sm); }
+
+.search-bar input {
+  flex: 1; border: none; outline: none; padding: 1.1rem 1.5rem;
+  font-size: 0.95rem; font-family: 'Outfit', sans-serif;
+  color: var(--text); background: none;
+}
+.search-bar input::placeholder { color: var(--text-light); }
+
+.search-divider { width: 1px; height: 28px; background: var(--border); }
+
+.search-bar select {
+  border: none; outline: none; background: none; padding: 0 1.2rem;
+  font-family: 'Outfit', sans-serif; font-size: 0.88rem;
+  color: var(--text-muted); cursor: none; height: 100%;
+}
+.search-bar .btn { margin: 7px; border-radius: 50px; padding: 10px 28px; font-size: 0.9rem; }
+
+.filter-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.chip {
+  padding: 6px 16px; border-radius: 50px; border: 1px solid var(--border);
+  font-size: 0.8rem; color: var(--text-muted); background: white; cursor: none;
+  transition: all 0.2s;
+}
+.chip:hover, .chip.active { border-color: var(--sage); color: var(--sage); background: var(--sage-pale); }
+
+/* ===== BOOKS GRID ===== */
+.books-section { padding: 0 3rem 6rem; max-width: 1300px; margin: 0 auto; }
+.books-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2.5rem; }
+.view-all-link { font-size: 0.88rem; color: var(--sage); border-bottom: 1px solid var(--sage-light); padding-bottom: 1px; transition: color 0.2s; }
+.view-all-link:hover { color: var(--brown); border-color: var(--brown); }
+
+.books-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+
+.book-card {
+  background: white; border-radius: var(--radius-lg); border: 1px solid var(--border);
+  overflow: hidden; cursor: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+.book-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+
+.book-cover-area {
+  height: 190px; position: relative; overflow: hidden;
+  display: flex; align-items: flex-end; padding: 1rem;
+}
+.cover-pattern {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Lora', serif; font-size: 3rem; opacity: 0.12; color: white;
+}
+.cover-a { background: linear-gradient(145deg, #2D4A38, #4D7A5A); }
+.cover-b { background: linear-gradient(145deg, #7A3D28, #C4783A); }
+.cover-c { background: linear-gradient(145deg, #3D3D7A, #6060AA); }
+.cover-d { background: linear-gradient(145deg, #28507A, #4A8AAA); }
+.cover-e { background: linear-gradient(145deg, #6B3D5A, #A0608A); }
+.cover-f { background: linear-gradient(145deg, #2A5A2A, #5A9A5A); }
+.cover-g { background: linear-gradient(145deg, #5A4A28, #9A8050); }
+.cover-h { background: linear-gradient(145deg, #5A2A2A, #AA5050); }
+
+.book-price-tag {
+  background: rgba(255,255,255,0.95); color: var(--brown);
+  font-size: 0.95rem; font-weight: 600;
+  padding: 4px 12px; border-radius: 20px;
+  position: relative; z-index: 2;
+}
+.book-wishlist {
+  position: absolute; top: 0.85rem; right: 0.85rem; z-index: 2;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; border: none;
+  transition: all 0.22s; color: var(--text-light);
+}
+.book-wishlist:hover, .book-wishlist.liked { color: #e05a70; background: white; }
+
+.book-info { padding: 1rem 1.1rem 1.1rem; }
+.book-genre-tag { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sage); margin-bottom: 5px; }
+.book-title { font-size: 0.92rem; font-weight: 500; color: var(--brown); margin-bottom: 2px; line-height: 1.35; }
+.book-author { font-size: 0.8rem; color: var(--text-light); margin-bottom: 0.75rem; }
+.book-meta { display: flex; justify-content: space-between; align-items: center; }
+.book-condition {
+  font-size: 0.72rem; padding: 3px 10px; border-radius: 20px; font-weight: 500;
+}
+.cond-neuf { background: var(--amber-pale); color: var(--amber); }
+.cond-tbien { background: var(--sage-pale); color: var(--sage); }
+.cond-bien { background: var(--warm); color: var(--brown-mid); }
+.book-rating { font-size: 0.78rem; color: var(--text-light); display: flex; align-items: center; gap: 3px; }
+.book-rating .star { color: #E8A030; }
+
+/* ===== HOW IT WORKS ===== */
+.how-section { background: var(--warm); padding: 7rem 3rem; }
+.how-inner { max-width: 1300px; margin: 0 auto; }
+.how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; margin-top: 4rem; }
+
+.steps-list { display: flex; flex-direction: column; gap: 0; }
+.step-item {
+  display: flex; gap: 1.5rem;
+  padding: 1.8rem 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.step-item:first-child { padding-top: 0; }
+.step-item:last-child { border-bottom: none; padding-bottom: 0; }
+.step-num {
+  width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Lora', serif; font-size: 1rem; font-weight: 700; color: white;
+}
+.sn-1 { background: var(--sage); }
+.sn-2 { background: var(--amber); }
+.sn-3 { background: var(--brown); }
+.step-content h4 { font-size: 1rem; font-weight: 600; color: var(--brown); margin-bottom: 0.4rem; }
+.step-content p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+
+.how-preview {
+  background: var(--cream); border-radius: var(--radius-xl);
+  padding: 1.8rem; border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+.preview-title { font-size: 0.8rem; font-weight: 500; color: var(--text-light); margin-bottom: 1.2rem; display: flex; align-items: center; gap: 6px; }
+.preview-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sage); }
+
+.mini-book-row {
+  display: flex; gap: 1rem; align-items: center;
+  background: white; border-radius: var(--radius-md);
+  padding: 1rem; margin-bottom: 0.8rem;
+  border: 1px solid var(--border); cursor: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.mini-book-row:hover { transform: translateX(5px); box-shadow: var(--shadow-sm); }
+.mini-cover { width: 46px; height: 62px; border-radius: 5px; flex-shrink: 0; }
+.mc-green { background: linear-gradient(145deg, #2D4A38, #5A8A6A); }
+.mc-orange { background: linear-gradient(145deg, #8A4A2D, #C47B3A); }
+.mc-navy { background: linear-gradient(145deg, #2D3D6B, #4A5A9A); }
+.mini-book-info { flex: 1; }
+.mini-book-title { font-size: 0.88rem; font-weight: 500; color: var(--brown); }
+.mini-book-author { font-size: 0.76rem; color: var(--text-light); margin: 2px 0 6px; }
+.mini-book-foot { display: flex; align-items: center; gap: 8px; }
+.mini-price { font-weight: 600; font-size: 0.92rem; color: var(--sage); }
+.mini-cond-tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; background: var(--sage-pale); color: var(--sage); }
+.mini-action { font-size: 0.75rem; color: var(--text-light); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; transition: all 0.2s; white-space: nowrap; }
+.mini-book-row:hover .mini-action { border-color: var(--sage); color: var(--sage); }
+
+/* ===== SELL SECTION ===== */
+.sell-section { padding: 7rem 3rem; max-width: 1300px; margin: 0 auto; }
+.sell-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+
+.sell-content h2 { margin-bottom: 1.2rem; }
+.sell-content .section-sub { margin-bottom: 2.5rem; }
+
+.sell-perks { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
+.perk { display: flex; align-items: flex-start; gap: 1rem; }
+.perk-icon {
+  width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.pi-green { background: var(--sage-pale); }
+.pi-amber { background: var(--amber-pale); }
+.pi-brown { background: var(--paper); }
+.perk-text h5 { font-size: 0.92rem; font-weight: 600; color: var(--brown); margin-bottom: 3px; }
+.perk-text p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.55; }
+
+/* SELL FORM */
+.sell-form-card {
+  background: white; border-radius: var(--radius-xl);
+  border: 1px solid var(--border); box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.form-header {
+  padding: 1.5rem 1.8rem;
+  background: var(--sage); display: flex; align-items: center; gap: 10px;
+}
+.form-header-icon { font-size: 20px; }
+.form-header-text h4 { font-size: 0.95rem; font-weight: 600; color: white; }
+.form-header-text p { font-size: 0.78rem; color: rgba(255,255,255,0.75); margin-top: 1px; }
+.form-body { padding: 1.8rem; }
+
+.form-group { margin-bottom: 1.1rem; }
+.form-group label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%; padding: 0.75rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); outline: none;
+  font-family: 'Outfit', sans-serif; font-size: 0.9rem;
+  color: var(--text); background: var(--cream);
+  transition: border-color 0.2s, background 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: var(--sage); background: white; }
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+.form-submit {
+  width: 100%; padding: 13px;
+  background: var(--sage); color: white; border: none;
+  border-radius: 50px; font-size: 0.95rem; font-weight: 600;
+  margin-top: 0.5rem; transition: all 0.22s;
+}
+.form-submit:hover { background: var(--brown); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(61,107,79,0.3); }
+
+.form-note { font-size: 0.75rem; color: var(--text-light); text-align: center; margin-top: 0.8rem; }
+
+/* ===== VALUES / WHY ===== */
+.values-section { background: var(--brown); padding: 7rem 3rem; }
+.values-inner { max-width: 1300px; margin: 0 auto; }
+.values-inner .section-eyebrow { color: var(--sage-light); }
+.values-inner .section-heading { color: white; max-width: 500px; margin-bottom: 0.8rem; }
+.values-inner .section-sub { color: rgba(255,255,255,0.6); }
+.values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
+.value-card {
+  background: rgba(255,255,255,0.06); border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.10);
+  padding: 2rem; transition: background 0.25s, transform 0.25s;
+}
+.value-card:hover { background: rgba(255,255,255,0.10); transform: translateY(-4px); }
+.value-icon { font-size: 2rem; margin-bottom: 1.2rem; }
+.value-card h4 { font-family: 'Lora', serif; font-size: 1.1rem; color: white; margin-bottom: 0.6rem; }
+.value-card p { font-size: 0.88rem; color: rgba(255,255,255,0.6); line-height: 1.65; }
+
+/* Forces section */
+.forces-section { padding: 6rem 3rem; max-width: 1300px; margin: 0 auto; }
+.forces-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-top: 3rem; }
+.force-card {
+  background: white; border-radius: var(--radius-lg);
+  border: 1px solid var(--border); padding: 2rem 1.6rem;
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+  position: relative; overflow: hidden;
+}
+.force-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: var(--sage); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.force-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.force-number {
+  font-family: 'Lora', serif; font-size: 3rem; font-weight: 700;
+  color: var(--sage-pale); line-height: 1; margin-bottom: 1rem;
+  position: absolute; top: 1.2rem; right: 1.4rem;
+}
+.force-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+.force-card h4 { font-family: 'Lora', serif; font-size: 1rem; color: var(--brown); margin-bottom: 0.5rem; line-height: 1.3; }
+.force-card p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.65; }
+
+/* ===== COMPETITORS TABLE ===== */
+.compare-section { background: var(--warm); padding: 7rem 3rem; }
+.compare-inner { max-width: 900px; margin: 0 auto; }
+.compare-table { width: 100%; border-collapse: collapse; margin-top: 3rem; background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+.compare-table th {
+  padding: 1rem 1.5rem; font-size: 0.82rem; font-weight: 600;
+  text-align: left; background: var(--paper); color: var(--brown);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table th:first-child { border-radius: var(--radius-md) 0 0 0; }
+.compare-table th.highlight { background: var(--sage); color: white; }
+.compare-table td { padding: 1rem 1.5rem; font-size: 0.88rem; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table td.highlight { background: var(--sage-pale); font-weight: 500; color: var(--sage); }
+.compare-table td.feature-name { font-weight: 500; color: var(--brown); }
+.check-yes { color: #3D8A5A; font-weight: 700; font-size: 1rem; }
+.check-no { color: var(--text-light); font-size: 1rem; }
+.check-partial { color: var(--amber); font-size: 1rem; }
+
+/* ===== TESTIMONIALS ===== */
+.testimonials-section { padding: 7rem 3rem; max-width: 1300px; margin: 0 auto; }
+.test-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.test-card {
+  background: white; border-radius: var(--radius-lg);
+  border: 1px solid var(--border); padding: 2rem;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.test-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+.test-stars { color: #E8A030; font-size: 0.88rem; margin-bottom: 1rem; letter-spacing: 2px; }
+.test-quote {
+  font-family: 'Lora', serif; font-style: italic;
+  font-size: 0.95rem; color: var(--text-muted); line-height: 1.75;
+  margin-bottom: 1.5rem;
+}
+.test-author { display: flex; align-items: center; gap: 0.8rem; }
+.test-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 0.82rem; color: white; flex-shrink: 0;
+}
+.av-sage { background: var(--sage); }
+.av-amber { background: var(--amber); }
+.av-brown { background: var(--brown); }
+.av-rust { background: var(--rust); }
+.test-name { font-size: 0.88rem; font-weight: 600; color: var(--brown); }
+.test-role { font-size: 0.78rem; color: var(--text-light); margin-top: 1px; }
+
+/* ===== CTA BAND ===== */
+.cta-band {
+  background: var(--sage); padding: 5rem 3rem;
+  text-align: center;
+}
+.cta-band h2 {
+  font-family: 'Lora', serif; font-size: clamp(2rem, 3.5vw, 3rem);
+  color: white; margin-bottom: 1rem;
+}
+.cta-band p { color: rgba(255,255,255,0.75); font-size: 1rem; line-height: 1.7; max-width: 480px; margin: 0 auto 2.5rem; }
+.cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-white { background: white; color: var(--sage); padding: 14px 36px; border-radius: 50px; font-size: 0.95rem; font-weight: 600; border: none; transition: all 0.22s; }
+.btn-white:hover { background: var(--cream); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.15); }
+.btn-ghost-white { background: none; border: 1.5px solid rgba(255,255,255,0.45); color: white; padding: 14px 36px; border-radius: 50px; font-size: 0.95rem; transition: all 0.22s; }
+.btn-ghost-white:hover { border-color: white; background: rgba(255,255,255,0.1); }
+
+/* ===== NEWSLETTER ===== */
+.newsletter-section { padding: 4rem 3rem; max-width: 1300px; margin: 0 auto; }
+.newsletter-card {
+  background: var(--paper); border-radius: var(--radius-xl);
+  padding: 3rem; display: flex; align-items: center; gap: 3rem;
+  border: 1px solid var(--border);
+}
+.newsletter-content { flex: 1; }
+.newsletter-content h3 { font-family: 'Lora', serif; font-size: 1.5rem; color: var(--brown); margin-bottom: 0.5rem; }
+.newsletter-content p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+.newsletter-form { display: flex; gap: 0.6rem; flex-shrink: 0; }
+.newsletter-form input {
+  padding: 11px 18px; border-radius: 50px; border: 1.5px solid var(--border-mid);
+  font-family: 'Outfit', sans-serif; font-size: 0.9rem;
+  background: white; color: var(--text); outline: none; width: 240px;
+  transition: border-color 0.2s;
+}
+.newsletter-form input:focus { border-color: var(--sage); }
+.newsletter-form .btn-primary { padding: 11px 24px; }
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--brown); padding: 4.5rem 3rem 2rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.footer-grid { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 2.5fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+.footer-brand .nav-logo { color: white; }
+.footer-brand .nav-logo span { color: var(--sage-light); }
+.footer-brand p { font-size: 0.86rem; color: rgba(255,255,255,0.5); line-height: 1.7; margin-top: 1rem; max-width: 280px; }
+.footer-socials { display: flex; gap: 0.6rem; margin-top: 1.5rem; }
+.social-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12); background: none;
+  color: rgba(255,255,255,0.55); font-size: 0.8rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.social-btn:hover { border-color: var(--sage-light); color: var(--sage-light); background: rgba(61,107,79,0.15); }
+.footer-col h5 { font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.4); margin-bottom: 1.2rem; }
+.footer-col ul { display: flex; flex-direction: column; gap: 0.6rem; }
+.footer-col ul li a { font-size: 0.88rem; color: rgba(255,255,255,0.6); transition: color 0.2s; }
+.footer-col ul li a:hover { color: white; }
+.footer-bottom { max-width: 1300px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; }
+.footer-bottom p { font-size: 0.8rem; color: rgba(255,255,255,0.35); }
+.footer-eco { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--sage-light); }
+
+/* ===== SCROLL ANIMATIONS ===== */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 800;
+  background: rgba(30,20,12,0.55); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white; border-radius: var(--radius-xl);
+  padding: 2.5rem; max-width: 480px; width: 90%;
+  box-shadow: var(--shadow-lg); position: relative;
+  animation: fadeUp 0.3s ease;
+}
+.modal-close {
+  position: absolute; top: 1.2rem; right: 1.2rem;
+  background: var(--paper); border: none; width: 32px; height: 32px;
+  border-radius: 50%; font-size: 1rem; color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { background: var(--border); color: var(--brown); }
+.modal h3 { font-family: 'Lora', serif; font-size: 1.5rem; color: var(--brown); margin-bottom: 0.5rem; }
+.modal p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+.modal-tabs { display: flex; gap: 0; background: var(--cream); border-radius: 10px; padding: 4px; margin-bottom: 1.5rem; }
+.modal-tab { flex: 1; padding: 8px; border: none; background: none; border-radius: 7px; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); transition: all 0.2s; }
+.modal-tab.active { background: white; color: var(--sage); box-shadow: var(--shadow-sm); }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 900;
+  background: var(--brown); color: white;
+  padding: 0.9rem 1.5rem; border-radius: 12px;
+  font-size: 0.88rem; font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(120px); opacity: 0;
+  transition: all 0.35s ease;
+  display: flex; align-items: center; gap: 8px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast-icon { font-size: 1rem; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1100px) {
+  .books-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  nav { padding: 0 1.5rem; }
+  .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 80px 1.5rem 2rem; min-height: auto; }
+  .hero-right { display: none; }
+  .hero-left { padding: 2rem 0; }
+  .how-grid, .sell-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .books-grid { grid-template-columns: repeat(2, 1fr); }
+  .values-grid, .test-grid { grid-template-columns: 1fr 1fr; }
+  .forces-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .newsletter-card { flex-direction: column; gap: 1.5rem; }
+  .newsletter-form { width: 100%; }
+  .newsletter-form input { flex: 1; width: auto; }
+  .search-section, .books-section, .sell-section, .testimonials-section, .newsletter-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .how-section, .values-section, .forces-section, .compare-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .cta-band { padding: 4rem 1.5rem; }
+}
+@media (max-width: 600px) {
+  .books-grid { grid-template-columns: 1fr; }
+  .values-grid, .test-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 2.4rem; }
+  .hero-stats { gap: 1.5rem; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .compare-table { font-size: 0.8rem; }
+  .compare-table th, .compare-table td { padding: 0.75rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toast-msg">Ajouté à vos favoris !</span>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>Bienvenue !</h3>
+    <p>Rejoignez la communauté Second Page et donnez une seconde vie à vos livres.</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab(this,'login')">Se connecter</button>
+      <button class="modal-tab" onclick="switchTab(this,'register')">S'inscrire</button>
+    </div>
+    <div id="modal-form-login">
+      <div class="form-group"><label>Email</label><input type="email" placeholder="vous@exemple.com"></div>
+      <div class="form-group"><label>Mot de passe</label><input type="password" placeholder="••••••••"></div>
+      <button class="form-submit" onclick="showToast('Connexion réussie — Bonjour !')">Se connecter</button>
+    </div>
+    <div id="modal-form-register" style="display:none">
+      <div class="form-row">
+        <div class="form-group"><label>Prénom</label><input type="text" placeholder="Marie"></div>
+        <div class="form-group"><label>Nom</label><input type="text" placeholder="Dupont"></div>
+      </div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="vous@exemple.com"></div>
+      <div class="form-group"><label>Mot de passe</label><input type="password" placeholder="Minimum 8 caractères"></div>
+      <button class="form-submit" onclick="showToast('Compte créé — Bienvenue !')">Créer mon compte</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 012-2h13a1 1 0 011 1v13a1 1 0 01-1 1H6a2 2 0 002 2h12v2H6a4 4 0 01-4-4z"/></svg>
+    </div>
+    Second<span>Page</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#books">Parcourir</a></li>
+    <li><a href="#sell">Vendre</a></li>
+    <li><a href="#how">Comment ça marche</a></li>
+    <li><a href="#compare">Avantages</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn btn-ghost" onclick="openModal()">Se connecter</button>
+    <button class="btn btn-primary" onclick="openModal()">Rejoindre</button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-pill">
+      <span class="hero-pill-dot"></span>
+      Plateforme 100% livres · Peer-to-peer · France
+    </div>
+    <h1>Parce que chaque livre mérite une <em>nouvelle <span class="underline-word">histoire.</span></em></h1>
+    <p class="hero-desc">Second Page est la première plateforme dédiée à l'échange de livres d'occasion entre particuliers. Économique, écologique, et passionnée de lecture.</p>
+    <div class="hero-cta-group">
+      <button class="btn btn-primary btn-xl" onclick="document.getElementById('books').scrollIntoView({behavior:'smooth'})">Explorer les livres →</button>
+      <button class="btn btn-ghost btn-large" onclick="document.getElementById('sell').scrollIntoView({behavior:'smooth'})">Vendre le mien</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-number">80%</div>
+        <div class="stat-label">des livres lus<br>une seule fois</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">€20+</div>
+        <div class="stat-label">coût moyen<br>d'un livre neuf</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">0</div>
+        <div class="stat-label">plateforme dédiée<br>aux livres d'occasion</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="books-scene">
+      <div class="book book-1">
+        <div>
+          <div class="book-cat">Roman · Bon état</div>
+          <div class="book-ttl">L'Étranger</div>
+          <div class="book-auth">Albert Camus</div>
+        </div>
+        <div class="book-footer">
+          <div class="book-price">3,50 €</div>
+          <div class="book-eco">♻ Éco</div>
+        </div>
+      </div>
+      <div class="book book-2">
+        <div>
+          <div class="book-cat">Sci-Fi · Très bon</div>
+          <div class="book-ttl">Dune</div>
+          <div class="book-auth">Frank Herbert</div>
+        </div>
+        <div class="book-footer">
+          <div class="book-price">5,00 €</div>
+          <div class="book-eco">♻ Éco</div>
+        </div>
+      </div>
+      <div class="book book-3">
+        <div>
+          <div class="book-cat">Développement · Neuf</div>
+          <div class="book-ttl">Atomic Habits</div>
+          <div class="book-auth">James Clear</div>
+        </div>
+        <div class="book-footer">
+          <div class="book-price">8,00 €</div>
+          <div class="book-eco">♻ Éco</div>
+        </div>
+      </div>
+      <div class="ftag ftag-1">
+        <div class="ftag-dot" style="background:var(--sage)"></div>
+        Sophie vient de vendre ✓
+      </div>
+      <div class="ftag ftag-2">
+        <div class="ftag-dot" style="background:var(--amber)"></div>
+        12 livres près de toi
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MARQUEE ===== -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <!-- repeated 2x for infinite scroll -->
+    <span class="marquee-item"><strong>100% Livres</strong> <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">Peer-to-peer <span class="marquee-sep">·</span></span>
+    <span class="marquee-item"><strong>Éco-responsable</strong> <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">Communauté de lecteurs <span class="marquee-sep">·</span></span>
+    <span class="marquee-item"><strong>Paiement sécurisé</strong> <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">France entière <span class="marquee-sep">·</span></span>
+    <span class="marquee-item"><strong>Commission uniquement à la vente</strong> <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">Annonce en 1 minute <span class="marquee-sep">·</span></span>
+    <span class="marquee-item"><strong>100% Livres</strong> <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">Peer-to-peer <span class="marquee-sep">·</span></span>
+    <span class="marquee-item"><strong>Éco-responsable</strong> <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">Communauté de lecteurs <span class="marquee-sep">·</span></span>
+    <span class="marquee-item"><strong>Paiement sécurisé</strong> <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">France entière <span class="marquee-sep">·</span></span>
+    <span class="marquee-item"><strong>Commission uniquement à la vente</strong> <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">Annonce en 1 minute <span class="marquee-sep">·</span></span>
+  </div>
+</div>
+
+<!-- ===== SEARCH ===== -->
+<section class="search-section" id="books">
+  <div class="section-eyebrow reveal">Trouvez votre prochain livre</div>
+  <h2 class="section-heading reveal reveal-delay-1">Parcourez des milliers d'annonces</h2>
+  <div class="search-bar reveal reveal-delay-2">
+    <input type="text" placeholder="Titre, auteur, ISBN, genre..." id="searchInput">
+    <div class="search-divider"></div>
+    <select id="genreFilter">
+      <option value="">Tous genres</option>
+      <option>Roman</option>
+      <option>Sci-Fi & Fantasy</option>
+      <option>Philosophie</option>
+      <option>Développement personnel</option>
+      <option>Jeunesse</option>
+      <option>Manuel scolaire</option>
+      <option>Histoire</option>
+      <option>Biographie</option>
+    </select>
+    <div class="search-divider"></div>
+    <select id="condFilter">
+      <option value="">Tout état</option>
+      <option>Comme neuf</option>
+      <option>Très bon état</option>
+      <option>Bon état</option>
+    </select>
+    <button class="btn btn-primary" onclick="showToast('Recherche en cours…')">Rechercher</button>
+  </div>
+  <div class="filter-chips reveal reveal-delay-2">
+    <button class="chip active" onclick="filterBooks(this,'')">Tous</button>
+    <button class="chip" onclick="filterBooks(this,'roman')">Romans</button>
+    <button class="chip" onclick="filterBooks(this,'scifi')">Sci-Fi</button>
+    <button class="chip" onclick="filterBooks(this,'dev')">Développement</button>
+    <button class="chip" onclick="filterBooks(this,'philo')">Philosophie</button>
+    <button class="chip" onclick="filterBooks(this,'jeunesse')">Jeunesse</button>
+    <button class="chip" onclick="filterBooks(this,'manuel')">Manuels</button>
+  </div>
+</section>
+
+<!-- ===== BOOKS GRID ===== -->
+<section class="books-section">
+  <div class="books-header reveal">
+    <div>
+      <div class="section-eyebrow">Découvertes du jour</div>
+      <h2 class="section-heading" style="margin-bottom:0">Livres à la une</h2>
+    </div>
+    <a href="#" class="view-all-link">Voir toutes les annonces →</a>
+  </div>
+  <div class="books-grid" id="booksGrid">
+
+    <div class="book-card reveal" data-cat="roman">
+      <div class="book-cover-area cover-a">
+        <div class="cover-pattern">📖</div>
+        <span class="book-price-tag">4,50 €</span>
+        <button class="book-wishlist" onclick="toggleWish(this)">♡</button>
+      </div>
+      <div class="book-info">
+        <div class="book-genre-tag">Roman classique</div>
+        <div class="book-title">Le Petit Prince</div>
+        <div class="book-author">Antoine de Saint-Exupéry</div>
+        <div class="book-meta">
+          <span class="book-condition cond-tbien">Très bon état</span>
+          <span class="book-rating"><span class="star">★</span> 4.9</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-card reveal reveal-delay-1" data-cat="dev">
+      <div class="book-cover-area cover-b">
+        <div class="cover-pattern">💡</div>
+        <span class="book-price-tag">6,00 €</span>
+        <button class="book-wishlist" onclick="toggleWish(this)">♡</button>
+      </div>
+      <div class="book-info">
+        <div class="book-genre-tag">Développement personnel</div>
+        <div class="book-title">Deep Work</div>
+        <div class="book-author">Cal Newport</div>
+        <div class="book-meta">
+          <span class="book-condition cond-neuf">Comme neuf</span>
+          <span class="book-rating"><span class="star">★</span> 4.7</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-card reveal reveal-delay-2" data-cat="philo">
+      <div class="book-cover-area cover-c">
+        <div class="cover-pattern">🦉</div>
+        <span class="book-price-tag">3,00 €</span>
+        <button class="book-wishlist" onclick="toggleWish(this)">♡</button>
+      </div>
+      <div class="book-info">
+        <div class="book-genre-tag">Philosophie</div>
+        <div class="book-title">L'Être et le Néant</div>
+        <div class="book-author">Jean-Paul Sartre</div>
+        <div class="book-meta">
+          <span class="book-condition cond-bien">Bon état</span>
+          <span class="book-rating"><span class="star">★</span> 4.5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-card reveal reveal-delay-3" data-cat="scifi">
+      <div class="book-cover-area cover-d">
+        <div class="cover-pattern">🚀</div>
+        <span class="book-price-tag">7,50 €</span>
+        <button class="book-wishlist" onclick="toggleWish(this)">♡</button>
+      </div>
+      <div class="book-info">
+        <div class="book-genre-tag">Sci-Fi</div>
+        <div class="book-title">Foundation</div>
+        <div class="book-author">Isaac Asimov</div>
+        <div class="book-meta">
+          <span class="book-condition cond-neuf">Comme neuf</span>
+          <span class="book-rating"><span class="star">★</span> 4.8</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-card reveal" data-cat="roman">
+      <div class="book-cover-area cover-e">
+        <div class="cover-pattern">🌹</div>
+        <span class="book-price-tag">5,00 €</span>
+        <button class="book-wishlist" onclick="toggleWish(this)">♡</button>
+      </div>
+      <div class="book-info">
+        <div class="book-genre-tag">Roman</div>
+        <div class="book-title">Les Misérables</div>
+        <div class="book-author">Victor Hugo</div>
+        <div class="book-meta">
+          <span class="book-condition cond-bien">Bon état</span>
+          <span class="book-rating"><span class="star">★</span> 4.9</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-card reveal reveal-delay-1" data-cat="manuel">
+      <div class="book-cover-area cover-f">
+        <div class="cover-pattern">📐</div>
+        <span class="book-price-tag">9,00 €</span>
+        <button class="book-wishlist" onclick="toggleWish(this)">♡</button>
+      </div>
+      <div class="book-info">
+        <div class="book-genre-tag">Manuel scolaire</div>
+        <div class="book-title">Mathématiques Tle</div>
+        <div class="book-author">Éditions Belin — 2023</div>
+        <div class="book-meta">
+          <span class="book-condition cond-tbien">Très bon état</span>
+          <span class="book-rating"><span class="star">★</span> 4.3</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-card reveal reveal-delay-2" data-cat="dev">
+      <div class="book-cover-area cover-g">
+        <div class="cover-pattern">⚡</div>
+        <span class="book-price-tag">8,00 €</span>
+        <button class="book-wishlist" onclick="toggleWish(this)">♡</button>
+      </div>
+      <div class="book-info">
+        <div class="book-genre-tag">Développement personnel</div>
+        <div class="book-title">Atomic Habits</div>
+        <div class="book-author">James Clear</div>
+        <div class="book-meta">
+          <span class="book-condition cond-neuf">Comme neuf</span>
+          <span class="book-rating"><span class="star">★</span> 5.0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-card reveal reveal-delay-3" data-cat="jeunesse">
+      <div class="book-cover-area cover-h">
+        <div class="cover-pattern">🧙</div>
+        <span class="book-price-tag">5,50 €</span>
+        <button class="book-wishlist" onclick="toggleWish(this)">♡</button>
+      </div>
+      <div class="book-info">
+        <div class="book-genre-tag">Jeunesse / Fantasy</div>
+        <div class="book-title">Harry Potter T.1</div>
+        <div class="book-author">J.K. Rowling</div>
+        <div class="book-meta">
+          <span class="book-condition cond-tbien">Très bon état</span>
+          <span class="book-rating"><span class="star">★</span> 4.9</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<div class="how-section" id="how">
+  <div class="how-inner">
+    <div class="section-eyebrow reveal">Simple & rapide</div>
+    <h2 class="section-heading reveal reveal-delay-1">Comment ça marche ?</h2>
+    <div class="how-grid">
+      <div class="steps-list">
+        <div class="step-item reveal">
+          <div class="step-num sn-1">1</div>
+          <div class="step-content">
+            <h4>Listez votre livre</h4>
+            <p>Titre, condition, prix — tout en moins d'une minute. Ajoutez des photos pour rassurer les acheteurs et vendre plus vite.</p>
+          </div>
+        </div>
+        <div class="step-item reveal reveal-delay-1">
+          <div class="step-num sn-2">2</div>
+          <div class="step-content">
+            <h4>Parcourez & trouvez</h4>
+            <p>Filtrez par genre, auteur, état ou localisation. Notre moteur de recherche trouve votre prochain coup de cœur en quelques secondes.</p>
+          </div>
+        </div>
+        <div class="step-item reveal reveal-delay-2">
+          <div class="step-num sn-3">3</div>
+          <div class="step-content">
+            <h4>Échangez directement</h4>
+            <p>Contactez le vendeur en peer-to-peer, convenez d'une remise en main propre ou d'un envoi postal. Paiement 100% sécurisé via la plateforme.</p>
+          </div>
+        </div>
+      </div>
+      <div class="how-preview reveal reveal-delay-1">
+        <div class="preview-title"><span class="preview-dot"></span>Annonces récentes</div>
+        <div class="mini-book-row">
+          <div class="mini-cover mc-green"></div>
+          <div class="mini-book-info">
+            <div class="mini-book-title">Harry Potter et la Chambre des Secrets</div>
+            <div class="mini-book-author">J.K. Rowling</div>
+            <div class="mini-book-foot">
+              <span class="mini-price">5,00 €</span>
+              <span class="mini-cond-tag">Très bon</span>
+            </div>
+          </div>
+          <div class="mini-action">Contacter</div>
+        </div>
+        <div class="mini-book-row">
+          <div class="mini-cover mc-orange"></div>
+          <div class="mini-book-info">
+            <div class="mini-book-title">Sapiens — Une brève histoire de l'humanité</div>
+            <div class="mini-book-author">Yuval Noah Harari</div>
+            <div class="mini-book-foot">
+              <span class="mini-price">7,00 €</span>
+              <span class="mini-cond-tag">Comme neuf</span>
+            </div>
+          </div>
+          <div class="mini-action">Contacter</div>
+        </div>
+        <div class="mini-book-row">
+          <div class="mini-cover mc-navy"></div>
+          <div class="mini-book-info">
+            <div class="mini-book-title">1984</div>
+            <div class="mini-book-author">George Orwell</div>
+            <div class="mini-book-foot">
+              <span class="mini-price">3,50 €</span>
+              <span class="mini-cond-tag">Bon état</span>
+            </div>
+          </div>
+          <div class="mini-action">Contacter</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SELL SECTION ===== -->
+<section class="sell-section" id="sell">
+  <div class="sell-grid">
+    <div class="sell-content">
+      <div class="section-eyebrow reveal">Vendez facilement</div>
+      <h2 class="section-heading reveal reveal-delay-1">Donnez une seconde vie à vos livres</h2>
+      <p class="section-sub reveal reveal-delay-2">80% des livres ne sont lus qu'une seule fois. Ils méritent mieux qu'une étagère poussiéreuse. Vendez-les en quelques clics, faites des heureux — et gagnez quelques euros.</p>
+      <div class="sell-perks">
+        <div class="perk reveal">
+          <div class="perk-icon pi-green">💶</div>
+          <div class="perk-text">
+            <h5>Commission uniquement à la vente</h5>
+            <p>Publiez gratuitement. Vous ne payez une petite commission que lorsque votre livre est vendu.</p>
+          </div>
+        </div>
+        <div class="perk reveal reveal-delay-1">
+          <div class="perk-icon pi-amber">🔒</div>
+          <div class="perk-text">
+            <h5>Paiement sécurisé</h5>
+            <p>Les fonds sont retenus jusqu'à confirmation de réception par l'acheteur. Zéro risque pour le vendeur.</p>
+          </div>
+        </div>
+        <div class="perk reveal reveal-delay-2">
+          <div class="perk-icon pi-brown">⚡</div>
+          <div class="perk-text">
+            <h5>Annonce publiée en 1 minute</h5>
+            <p>Scannez ou renseignez l'ISBN pour pré-remplir toutes les informations automatiquement.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <div class="sell-form-card">
+        <div class="form-header">
+          <div class="form-header-icon">📚</div>
+          <div class="form-header-text">
+            <h4>Déposer une annonce</h4>
+            <p>Gratuit · Prêt en moins d'une minute</p>
+          </div>
+        </div>
+        <div class="form-body">
+          <div class="form-group">
+            <label>Titre du livre *</label>
+            <input type="text" placeholder="Ex : Le Seigneur des Anneaux">
+          </div>
+          <div class="form-group">
+            <label>Auteur *</label>
+            <input type="text" placeholder="Ex : J.R.R. Tolkien">
+          </div>
+          <div class="form-group">
+            <label>ISBN (optionnel)</label>
+            <input type="text" placeholder="Ex : 978-2-07-036024-9">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>État *</label>
+              <select>
+                <option>Comme neuf</option>
+                <option>Très bon état</option>
+                <option>Bon état</option>
+                <option>État correct</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Prix (€) *</label>
+              <input type="number" placeholder="0,00" min="0" step="0.50">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Genre</label>
+            <select>
+              <option>Sélectionner un genre</option>
+              <option>Roman</option>
+              <option>Sci-Fi & Fantasy</option>
+              <option>Philosophie</option>
+              <option>Développement personnel</option>
+              <option>Jeunesse</option>
+              <option>Manuel scolaire</option>
+              <option>Histoire</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Description (optionnel)</label>
+            <textarea placeholder="Précisez l'état, les annotations éventuelles..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Ville / Code postal *</label>
+            <input type="text" placeholder="Ex : Paris 75001">
+          </div>
+          <button class="form-submit" onclick="showToast('Annonce publiée avec succès ! 🎉')">Publier mon annonce gratuitement</button>
+          <p class="form-note">Commission de 8% uniquement en cas de vente · Paiement sécurisé</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VALUES ===== -->
+<div class="values-section">
+  <div class="values-inner">
+    <div class="section-eyebrow reveal">Nos engagements</div>
+    <h2 class="section-heading reveal reveal-delay-1">Pourquoi Second Page ?</h2>
+    <p class="section-sub reveal reveal-delay-2">Nous croyons que les livres méritent une seconde vie — et que chaque lecteur mérite un accès abordable à la culture.</p>
+    <div class="values-grid">
+      <div class="value-card reveal">
+        <div class="value-icon">♻️</div>
+        <h4>Éco-responsable</h4>
+        <p>Chaque livre vendu évite une impression neuve. Ensemble, nous réduisons notre empreinte carbone — un roman à la fois. Rejoignez l'économie circulaire de la lecture.</p>
+      </div>
+      <div class="value-card reveal reveal-delay-1">
+        <div class="value-icon">💚</div>
+        <h4>Vraiment abordable</h4>
+        <p>Accédez à des milliers de livres à une fraction du prix neuf. Idéal pour les étudiants, les lecteurs passionnés et tous ceux qui refusent de choisir entre lire et manger.</p>
+      </div>
+      <div class="value-card reveal reveal-delay-2">
+        <div class="value-icon">📖</div>
+        <h4>Communauté de lecteurs</h4>
+        <p>Rejoignez des milliers de lecteurs qui partagent votre passion. Avis, recommandations, coups de cœur — une vraie communauté construite autour du livre.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FORCES ===== -->
+<section class="forces-section">
+  <div class="section-eyebrow reveal">Ce qui nous rend uniques</div>
+  <h2 class="section-heading reveal reveal-delay-1">Nos forces</h2>
+  <p class="section-sub reveal reveal-delay-2">Second Page est conçu dès le départ pour les amoureux des livres — pas pour tout le monde, pour vous.</p>
+  <div class="forces-grid">
+    <div class="force-card reveal">
+      <div class="force-number">01</div>
+      <div class="force-icon">📚</div>
+      <h4>Seule plateforme 100% dédiée aux livres</h4>
+      <p>Pas de vêtements, pas d'électronique. Que des livres. Une expérience taillée pour les lecteurs, de la recherche à la vente.</p>
+    </div>
+    <div class="force-card reveal reveal-delay-1">
+      <div class="force-number">02</div>
+      <div class="force-icon">🤝</div>
+      <h4>Peer-to-peer direct, sans intermédiaire</h4>
+      <p>Vendeur et acheteur se parlent directement. Moins de frais, plus de confiance, une relation humaine au cœur de chaque échange.</p>
+    </div>
+    <div class="force-card reveal reveal-delay-2">
+      <div class="force-number">03</div>
+      <div class="force-icon">💬</div>
+      <h4>Communauté & système d'avis intégré</h4>
+      <p>Notes, avis, profils vérifiés — notre communauté de lecteurs garantit des échanges fiables et enrichissants pour tous.</p>
+    </div>
+    <div class="force-card reveal reveal-delay-3">
+      <div class="force-number">04</div>
+      <div class="force-icon">🌱</div>
+      <h4>Valeurs éco-responsables différenciantes</h4>
+      <p>Chaque vente est un geste pour la planète. Second Page porte l'économie circulaire comme valeur fondamentale, pas comme argument marketing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMPARE ===== -->
+<div class="compare-section" id="compare">
+  <div class="compare-inner">
+    <div class="section-eyebrow reveal">Comparatif</div>
+    <h2 class="section-heading reveal reveal-delay-1">Second Page vs la concurrence</h2>
+    <p class="section-sub reveal reveal-delay-2">Vinted, Momox, Leboncoin… Aucun n'est fait pour les livres. Second Page si.</p>
+    <table class="compare-table reveal">
+      <thead>
+        <tr>
+          <th>Fonctionnalité</th>
+          <th class="highlight">Second Page</th>
+          <th>Vinted</th>
+          <th>Momox</th>
+          <th>Leboncoin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="feature-name">📚 100% dédié aux livres</td>
+          <td class="highlight"><span class="check-yes">✓</span></td>
+          <td><span class="check-no">✗</span></td>
+          <td><span class="check-partial">~</span></td>
+          <td><span class="check-no">✗</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">🤝 Peer-to-peer (vendeur → acheteur)</td>
+          <td class="highlight"><span class="check-yes">✓</span></td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-no">✗</span></td>
+          <td><span class="check-yes">✓</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">💬 Communauté & avis lecteurs</td>
+          <td class="highlight"><span class="check-yes">✓</span></td>
+          <td><span class="check-no">✗</span></td>
+          <td><span class="check-no">✗</span></td>
+          <td><span class="check-no">✗</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">🌱 Focus éco-responsable</td>
+          <td class="highlight"><span class="check-yes">✓</span></td>
+          <td><span class="check-partial">~</span></td>
+          <td><span class="check-no">✗</span></td>
+          <td><span class="check-no">✗</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">🔍 Filtres genre / auteur / état</td>
+          <td class="highlight"><span class="check-yes">✓</span></td>
+          <td><span class="check-no">✗</span></td>
+          <td><span class="check-partial">~</span></td>
+          <td><span class="check-partial">~</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">💳 Paiement sécurisé intégré</td>
+          <td class="highlight"><span class="check-yes">✓</span></td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-no">✗</span></td>
+        </tr>
+        <tr>
+          <td class="feature-name">🆓 Publication gratuite</td>
+          <td class="highlight"><span class="check-yes">✓</span></td>
+          <td><span class="check-yes">✓</span></td>
+          <td><span class="check-no">✗</span></td>
+          <td><span class="check-partial">~</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="testimonials-section">
+  <div class="section-eyebrow reveal">Ils adorent Second Page</div>
+  <h2 class="section-heading reveal reveal-delay-1">Ce que disent nos lecteurs</h2>
+  <div class="test-grid">
+    <div class="test-card reveal">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-quote">« Enfin une plateforme uniquement pour les livres ! J'ai vendu 15 romans en deux semaines, c'est incroyable. Et les acheteurs sont vraiment passionnés. »</p>
+      <div class="test-author">
+        <div class="test-avatar av-sage">ML</div>
+        <div>
+          <div class="test-name">Marie L.</div>
+          <div class="test-role">Vendeuse · Paris</div>
+        </div>
+      </div>
+    </div>
+    <div class="test-card reveal reveal-delay-1">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-quote">« En tant qu'étudiant, j'économise des centaines d'euros sur mes manuels chaque année. Trouver un manuel de terminale à 9€ c'est juste parfait. »</p>
+      <div class="test-author">
+        <div class="test-avatar av-amber">TM</div>
+        <div>
+          <div class="test-name">Thomas M.</div>
+          <div class="test-role">Étudiant · Lyon</div>
+        </div>
+      </div>
+    </div>
+    <div class="test-card reveal reveal-delay-2">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-quote">« La démarche éco-responsable me convainc totalement. Acheter d'occasion n'a jamais été aussi simple. Je recommande à tous mes amis lecteurs ! »</p>
+      <div class="test-author">
+        <div class="test-avatar av-rust">SB</div>
+        <div>
+          <div class="test-name">Sophie B.</div>
+          <div class="test-role">Lectrice · Bordeaux</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA BAND ===== -->
+<div class="cta-band">
+  <h2>Prêt à écrire votre prochain chapitre ?</h2>
+  <p>Rejoignez des milliers de lecteurs qui donnent une seconde vie à leurs livres. Gratuit pour parcourir, commission uniquement à la vente.</p>
+  <div class="cta-actions">
+    <button class="btn-white" onclick="openModal()">Créer mon compte gratuitement</button>
+    <button class="btn-ghost-white" onclick="document.getElementById('books').scrollIntoView({behavior:'smooth'})">Voir les livres disponibles</button>
+  </div>
+</div>
+
+<!-- ===== NEWSLETTER ===== -->
+<section class="newsletter-section">
+  <div class="newsletter-card reveal">
+    <div class="newsletter-content">
+      <h3>Restez au courant des meilleures annonces</h3>
+      <p>Recevez chaque semaine une sélection de livres triés sur le volet — par genre, par prix, par coup de cœur.</p>
+    </div>
+    <div class="newsletter-form">
+      <input type="email" placeholder="Votre adresse email">
+      <button class="btn btn-primary" onclick="showToast('Inscription réussie — merci !')">S'abonner</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo">
+        <div class="nav-logo-mark">
+          <svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M4 19V5a2 2 0 012-2h13a1 1 0 011 1v13a1 1 0 01-1 1H6a2 2 0 002 2h12v2H6a4 4 0 01-4-4z"/></svg>
+        </div>
+        Second<span>Page</span>
+      </div>
+      <p>La première plateforme peer-to-peer dédiée à la vente et l'achat de livres d'occasion. Économique, écologique, passionnée.</p>
+      <div class="footer-socials">
+        <button class="social-btn">In</button>
+        <button class="social-btn">Tk</button>
+        <button class="social-btn">Ig</button>
+        <button class="social-btn">Fb</button>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Plateforme</h5>
+      <ul>
+        <li><a href="#">Parcourir les livres</a></li>
+        <li><a href="#">Déposer une annonce</a></li>
+        <li><a href="#">Comment ça marche</a></li>
+        <li><a href="#">Tarifs & commission</a></li>
+        <li><a href="#">Application mobile</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Communauté</h5>
+      <ul>
+        <li><a href="#">Blog de lecture</a></li>
+        <li><a href="#">Avis & notes</a></li>
+        <li><a href="#">Influenceurs partenaires</a></li>
+        <li><a href="#">Programme ambassadeurs</a></li>
+        <li><a href="#">Instagram</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Aide & légal</h5>
+      <ul>
+        <li><a href="#">Centre d'aide / FAQ</a></li>
+        <li><a href="#">Nous contacter</a></li>
+        <li><a href="#">Signaler un problème</a></li>
+        <li><a href="#">Conditions d'utilisation</a></li>
+        <li><a href="#">Politique de confidentialité</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Second Page · Conçu par Maelys & Antoine</p>
+    <div class="footer-eco">♻ Plateforme engagée pour l'économie circulaire · France</div>
+  </div>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+/* --- Custom cursor --- */
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
+function animRing() { rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(animRing); }
+animRing();
+document.querySelectorAll('a, button, .chip, .book-card, .mini-book-row, .value-card, .test-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.style.width = '18px'; cursor.style.height = '18px'; ring.style.width = '52px'; ring.style.height = '52px'; });
+  el.addEventListener('mouseleave', () => { cursor.style.width = '10px'; cursor.style.height = '10px'; ring.style.width = '36px'; ring.style.height = '36px'; });
+});
+
+/* --- Navbar scroll --- */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 40); });
+
+/* --- Scroll reveal --- */
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.12 });
+revealEls.forEach(el => observer.observe(el));
+
+/* --- Modal --- */
+function openModal() { document.getElementById('authModal').classList.add('open'); }
+function closeModal() { document.getElementById('authModal').classList.remove('open'); }
+document.getElementById('authModal').addEventListener('click', e => { if (e.target.id === 'authModal') closeModal(); });
+function switchTab(btn, tab) {
+  document.querySelectorAll('.modal-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('modal-form-login').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('modal-form-register').style.display = tab === 'register' ? '' : 'none';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* --- Toast --- */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* --- Wishlist toggle --- */
+function toggleWish(btn) {
+  const isLiked = btn.classList.toggle('liked');
+  btn.textContent = isLiked ? '♥' : '♡';
+  if (isLiked) showToast('Ajouté à vos favoris !');
+}
+
+/* --- Filter chips --- */
+function filterBooks(chip, cat) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  const cards = document.querySelectorAll('#booksGrid .book-card');
+  cards.forEach(card => {
+    if (!cat || card.dataset.cat === cat) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+/* --- Search filter (live) --- */
+document.getElementById('searchInput').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('#booksGrid .book-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(q) ? '' : 'none';
+  });
+});
+
+/* --- Social btn icons --- */
+const labels = ['in','Tk','Ig','Fb'];
+const links = ['https://linkedin.com','https://tiktok.com','https://instagram.com','https://facebook.com'];
+document.querySelectorAll('.social-btn').forEach((btn, i) => {
+  btn.addEventListener('click', () => window.open(links[i], '_blank'));
+});
+</script>
+</body>
+</html>
